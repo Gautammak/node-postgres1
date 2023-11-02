@@ -44,3 +44,45 @@
  
 //   res.json({ user, token }); 
 // }
+
+//const  createEvent = async(req,res) =>{
+//     try {
+//       //console.log('req >>>>> ', req);
+//       const { title, description, date, inviteeIds } = req.body;
+//       const userId = req.user.id; // Get the ID of the authenticated user
+     
+//       console.log(userId);
+//       const event = await Event.create({ title, description, date, creatorId: userId });
+//     // Invite users to the event
+//       if (inviteeIds && inviteeIds.length > 0) {
+//      await event.addInvitees(inviteeIds);
+// }
+  
+//       return res.status(201).json(event);
+//     } catch (error) {
+//       console.error(error);
+//       return res.status(500).json({ error: 'Event creation failed' });
+//     }
+//}
+  
+//git init
+//git add .
+//git commit -m "add file"
+//git remote add bitbucket https://Gautam-Makavana@bitbucket.org/gautammakavana/node-postgres.git
+//git push -u -f bitbucket master
+
+// SELECT * 
+// FROM public."Events"
+
+// { 
+//     "title":"cricket",
+//      "description":"cricket",
+//      "date":"2022-02-02",
+//      "inviteeIds":1
+   
+// }
+
+// "firstname":"gautam-1234",
+// "lastname":"makavna-1234",
+// "email":"gm26@gmail.com",
+// "password":"123456"

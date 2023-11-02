@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken")
 const crypto = require("crypto");
 const nodemailer = require('nodemailer');
 const User = db.users;
+const Event = db.events;
 
 const userRegister = async (req, res) => {
   try {
@@ -72,7 +73,7 @@ const userLogin = async (req, res) => {
         return res.status(401).send("Authentication failed");
       }
     } else {
-      return res.status(401).send("Authentication failed");
+      return res.status(401).send("Authentication   failed");
     }
   } catch (error) {
     console.log(error);
@@ -113,11 +114,6 @@ const userLogout = async (req, res) => {
 const userChangepassword = async (req, res) => {
   try {
     const {email, currentPassword, newPassword } = req.body;
-    // const userId = req.users.id; // Get the authenticated user's ID
-    // console.log(userId);
-    // // Find the user by ID
-    // const user = await User.findByPk(userId);
-
     const user = await User.findOne({
       where: {
       email: email
@@ -127,7 +123,7 @@ const userChangepassword = async (req, res) => {
 
     // Verify the current password
     if (!user || !(await bcrypt.compare(currentPassword, user.password))) {
-      return res.status(401).json({ error: 'Incorrect current password' });
+      return res.status(401).json({ error: 'Incorrect current password or Email' });
     }
 
     // Hash and update the new password
@@ -210,15 +206,101 @@ const userUpdatepassword = async (req, res) => {
     user.password = hashedNewPassword;
     await user.save();
 
-    return res.status(200).json({ message: 'Password reset successful' });
+    return res.status(200).json({ message: 'Password Update successful' });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Internal server error' });
   }
 };
 
+  
 
 
+// const  createEvent = async(req,res) =>{
+// try {
+//   const { title, description, date, inviteeIds } = req.body;
+
+//   console.log(req.body);
+//   const creatorId = req.user.id; // Get the ID of the authenticated user
+//   console.log(creatorId);
+//   // Create the event
+//   const event = await Event.create({ title, description, date, creatorId });
+ 
+//   // Invite users to the event by their IDs
+//   if (inviteeIds && inviteeIds.length > 0) {
+//     const invitedUsers = await User.findAll({ where: { id: inviteeIds } });
+  
+//     if (invitedUsers) {
+//       await event.addInvitees(invitedUsers);
+//     }
+//   }
+
+//   return res.status(201).json(event);
+// } catch (error) {
+//   console.error(error);
+//   return res.status(500).json({ error: 'Event creation failed' });
+// }
+//   }
+
+
+
+const createEvent = async (req, res) => {
+  try {
+    const { title, description, date, inviteeIds } = req.body;
+    console.log(req.body);
+    const creatorId = req.user.id; // Get the ID of the authenticated user
+    console.log(creatorId);
+
+    // Create the event
+    const event = await Event.create({ title, description, date, creatorId });
+
+    console.log('Created event:', event);
+
+    // Invite users to the event by their IDs
+    if (inviteeIds && inviteeIds.length > 0) {
+      const invitedUsers = await User.findAll({ where: { id: inviteeIds } });
+
+      console.log('Invited users:', invitedUsers);
+
+      if (invitedUsers) {
+        await event.addInvitees(invitedUsers);
+      }
+    }
+
+    return res.status(201).json(event);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Event creation failed' });
+  }
+}
+
+  
+var getEvent = async (req, res) => {
+  
+  try {
+    const userId = req.user.id; // Get the ID of the authenticated user
+  
+      //Find events where the user is the creator
+     const createdEvents = await Event.findAll({ where: { creatorId: userId } });
+     console.log(createdEvents);
+      //Find events where the user is invited
+      const invitedEvents = await Event.findAll({
+        include: [
+          {
+            model: User,
+            as: 'invitees',
+            where: { id: userId }, // Check if the user is among the invitees
+          },
+        ],
+      });
+     console.log("invited" , invitedEvents);
+      return res.status(200).json({ createdEvents, invitedEvents });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Event retrieval failed' });
+    }
+}
+  
 
 
 
@@ -230,7 +312,9 @@ module.exports = {
   userLogout,
   userChangepassword,
   resetRequest,
-  userUpdatepassword
+  userUpdatepassword,
+  createEvent,
+  getEvent
 };
 
 

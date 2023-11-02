@@ -1,20 +1,32 @@
 const jwt = require('jsonwebtoken');
 
 function verifyToken(req, res, next) {
-  const token = req.headers.authorization;
+  const authHeader = req.headers.authorization;
 
-  if (!token) {
+  if (!authHeader) {
     return res.status(403).json({ error: 'No token provided' });
   }
+
+  const tokenParts = authHeader.split(' ');
+  if (tokenParts.length !== 2 || tokenParts[0].toLowerCase() !== 'bearer') {
+    return res.status(401).json({ error: 'Invalid token format' });
+  }
+
+  const token = tokenParts[1];
 
   jwt.verify(token, 'Node-Exam', (err, decoded) => {
     if (err) {
       return res.status(401).json({ error: 'Failed to authenticate token' });
     }
-
-    req.userId = decoded.userId;
-    next();
+//console.log('decoded >>>>>>', decoded);
+    req.user = { id: decoded.id };
   });
+  next();
 }
 
-module.exports = verifyToken;
+module.exports = verifyToken
+
+
+
+
+
