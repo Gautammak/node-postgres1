@@ -33,12 +33,10 @@ const sequelize = new Sequelize('event_management', 'postgres', 'Password', {
   db.events = require("./events")(sequelize,DataTypes);
   db.user_event = require("./user_event")(sequelize,DataTypes);
 
-   
-
 
   db.user_event.belongsTo(db.users);
   db.user_event.belongsTo(db.events);
-  db.users.hasMany(db.user_event);
+  db.users.hasMany(db.user_event );
   db.events.hasMany(db.user_event);
   
   db.users.belongsToMany(db.events, { through: db.user_event, as: 'events' });

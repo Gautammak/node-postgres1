@@ -64,7 +64,59 @@
 //       return res.status(500).json({ error: 'Event creation failed' });
 //     }
 //}
+
+// const  createEvent = async(req,res) =>{
+// try {
+//   const { title, description, date, inviteeIds } = req.body;
+
+//   console.log(req.body);
+//   const creatorId = req.user.id; // Get the ID of the authenticated user
+//   console.log(creatorId);
+//   // Create the event
+//   const event = await Event.create({ title, description, date, creatorId });
+ 
+//   // Invite users to the event by their IDs
+//   if (inviteeIds && inviteeIds.length > 0) {
+//     const invitedUsers = await User.findAll({ where: { id: inviteeIds } });
   
+//     if (invitedUsers) {
+//       await event.addInvitees(invitedUsers);
+//     }
+//   }
+
+//   return res.status(201).json(event);
+// } catch (error) {
+//   console.error(error);
+//   return res.status(500).json({ error: 'Event creation failed' });
+// }
+//   }
+  
+
+// var getEvent = async (req, res) => {
+//   try {
+//     const userId = req.user.id; // Get the ID of the authenticated user
+
+//     // Find events where the user is the creator
+//     const createdEvents = await Event.findAll({ where: { creatorId: userId } });
+
+//     // Find events where the user is invited
+//     const invitedEvents = await Event.findAll({
+//       include: [
+//         {
+//           model: User,
+//           as: 'invitees',
+//           where: { id: userId }, // Check if the user is among the invitees
+//         },
+//       ],
+//     });
+
+//     return res.status(200).json({ createdEvents, invitedEvents });
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ error: 'Event retrieval failed' });
+//   }
+// }
+
 //git init
 //git add .
 //git commit -m "add file"
@@ -86,3 +138,10 @@
 // "lastname":"makavna-1234",
 // "email":"gm26@gmail.com",
 // "password":"123456"
+
+// {
+//     "title": "Event Title-3",
+//     "description": "Event Description-3",
+//     "date": "2023-12-02",
+//     "inviteeIds": [1,2,3] // Replace with actual user IDs
+//   }

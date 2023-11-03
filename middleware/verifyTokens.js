@@ -18,8 +18,10 @@ function verifyToken(req, res, next) {
     if (err) {
       return res.status(401).json({ error: 'Failed to authenticate token' });
     }
-//console.log('decoded >>>>>>', decoded);
+console.log('decoded >>>>>>', decoded);
     req.user = { id: decoded.id };
+   // req.email = {email:decoded.email}
+   
   });
   next();
 }
